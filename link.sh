@@ -1,4 +1,5 @@
-ln -s .vimrc ../.vimrc
-ln -s .zshrc ../.zshrc
-ln -s .bashrc ../.bashrc
-ln -s .gitconfig ../.gitconfig
+#!/bin/bash
+ln -s "$(pwd)/.vimrc" "../.vimrc"
+ln -s "$(pwd)/.zshrc" "../.zshrc"
+ln -s "$(pwd)/.bashrc" "../.bashrc"
+ln -s "$(pwd)/.gitconfig" "../.gitconfig"
