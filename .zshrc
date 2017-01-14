@@ -44,13 +44,13 @@ zplug "tevren/gitfast-zsh-plugin"
 zplug "zlsun/solarized-man"
 #
 ## fancy autosuggest based on history
-zplug "zsh-users/zsh-autosuggestions"
+#zplug "zsh-users/zsh-autosuggestions"
 #
 ## file browsing
 #zplug "vifon/deer", use:deer
 #
 ## fancy colors for listings
-#zplug "supercrabtree/k"
+zplug "supercrabtree/k"
 #
 ## theme
 zplug "bhilburn/powerlevel9k", use:powerlevel9k.zsh-theme
