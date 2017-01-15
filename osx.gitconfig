@@ -1,0 +1,6 @@
+[user]
+	signingkey = 10BE143C
+[credential]
+	helper = osxkeychain
+[commit]
+	gpgsign = true

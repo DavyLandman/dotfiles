@@ -1,7 +1,6 @@
 [user]
 	name = Davy Landman
 	email = davy.landman@gmail.com
-	signingkey = 10BE143C
 [color]
 	branch = auto
 	diff = auto
@@ -31,7 +30,9 @@
 	whitespace=fix,-indent-with-non-tab,trailing-space,cr-at-eol
 	pager = less -SR
 	autocrlf = input
-	excludesfile = /Users/davy/dotfiles/global.gitignore
+	excludesfile = ~/dotfiles/global.gitignore
+	preloadindex = true
+	fscache = true
 [alias]
 	st = status
 	ci = commit
@@ -53,8 +54,6 @@
 [push]
 	default = upstream
 	followTags = true
-[credential]
-	helper = osxkeychain
 [pull]
 	rebase = preserve
 [merge]
@@ -63,5 +62,7 @@
 	clean = git-lfs clean %f
 	smudge = git-lfs smudge %f
 	required = true
-[commit]
-	gpgsign = true
+[gc]
+	auto = 256
+[include]
+    path = ~/.gitconfig.local
