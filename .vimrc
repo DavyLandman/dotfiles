@@ -415,8 +415,13 @@ let g:vimtex_quickfix_ignored_warnings = [
 " only open quick fix window for errors
 let g:vimtex_quickfix_open_on_warning = 0
 " skim settings
-let g:vimtex_view_general_viewer
-      \ = '/Applications/Skim.app/Contents/SharedSupport/displayline'
+if has("unix")
+    let s:uname = system("uname -s")
+    if s:uname == "Darwin"
+        let g:vimtex_view_general_viewer
+              \ = '/Applications/Skim.app/Contents/SharedSupport/displayline'
+    endif
+endif
 let g:vimtex_view_general_options = '-r @line @pdf @tex'
 
 
