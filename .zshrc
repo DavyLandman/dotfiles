@@ -1,5 +1,6 @@
 
 
+
 export LANG=en_US.UTF-8
 export LANGUAGE=en_US.UTF-8
 export LC_ALL=en_US.UTF-8
@@ -21,7 +22,7 @@ zplug 'zplug/zplug', hook-build:'zplug --self-manage'
 
 
 ## fancy backwards search
-zplug "zsh-users/zsh-history-substring-search"
+zplug "zsh-users/zsh-history-substring-search", defer:3
 
 ## git stuff
 zplug "plugins/git",   from:oh-my-zsh
@@ -52,15 +53,6 @@ zplug "zlsun/solarized-man"
 ## fancy colors for listings
 zplug "supercrabtree/k"
 #
-## theme
-zplug "bhilburn/powerlevel9k", use:powerlevel9k.zsh-theme
-DEFAULT_USER='davy'
-POWERLEVEL9K_MODE='powerline'
-POWERLEVEL9K_PROMPT_ON_NEWLINE=true
-POWERLEVEL9K_COLOR_SCHEME='light'
-POWERLEVEL9K_LEFT_PROMPT_ELEMENTS=(context root_indicator dir )
-POWERLEVEL9K_RIGHT_PROMPT_ELEMENTS=(vcs)
-POWERLEVEL9K_MULTILINE_FIRST_PROMPT_PREFIX=""
 #
 #
 ## zsh stuff
@@ -72,12 +64,23 @@ zplug "jreese/zsh-titles"
 
 # vim mode
 zplug "sharat87/zsh-vim-mode"
+#zplug "b4b4r07/zsh-vimode-visual", use:"*.zsh", defer:3
+
 
 if [[ $(uname) == Darwin ]]; then
     zplug "$(brew --prefix rbenv)/completions", from:local
     zplug "/usr/local/etc/bash_completion.d", from:local, defer:1
 fi
 
+## theme
+zplug "bhilburn/powerlevel9k", use:powerlevel9k.zsh-theme
+DEFAULT_USER='davy'
+POWERLEVEL9K_MODE='powerline'
+POWERLEVEL9K_PROMPT_ON_NEWLINE=true
+POWERLEVEL9K_COLOR_SCHEME='light'
+POWERLEVEL9K_LEFT_PROMPT_ELEMENTS=(context root_indicator dir )
+POWERLEVEL9K_RIGHT_PROMPT_ELEMENTS=(vcs vi_mode)
+POWERLEVEL9K_MULTILINE_FIRST_PROMPT_PREFIX=""
 
 if ! zplug check; then
     zplug install
@@ -85,7 +88,8 @@ fi
 
 zplug load
 
-POWERLEVEL9K_MULTILINE_SECOND_PROMPT_PREFIX="$(prompt_status left && left_prompt_end)"
+POWERLEVEL9K_MULTILINE_SECOND_PROMPT_PREFIX="$(prompt_status left && prompt_vi_mode left && left_prompt_end)"
+[ -f ~/.fzf.zsh ] && source ~/.fzf.zsh
 
 alias ls='ls -G'
 alias l='ls -lF'
@@ -103,4 +107,16 @@ export PKG_CONFIG_PATH=/usr/local/lib/pkgconfig:/usr/local/lib:/opt/X11/lib/pkgc
 export MONO_GAC_PREFIX="/usr/local"
 export FZF_DEFAULT_COMMAND='rg --files --no-ignore --hidden --follow --glob "!.git/*"'
 export PATH=$PATH:$HOME/.rvm/bin # Add RVM to PATH for scripting
-[ -f ~/.fzf.zsh ] && source ~/.fzf.zsh
+
+
+# completion
+
+zstyle ':completion:*' matcher-list 'm:{a-z}={A-Z}'
+zstyle ':completion:*' completer _expand _complete _match _prefix _approximate _list _history
+zstyle ':completion:*:*files' ignored-patterns '*?.o' '*?~' '*\#'
+zstyle ':completion:*' use-cache true
+zstyle ':completion:*:*:-subscript-:*' tag-order indexes parameters
+
+# Directory
+zstyle ':completion:*:cd:*' ignore-parents parent pwd
+zstyle ':completion:*' list-colors ${(s.:.)LS_COLORS}
