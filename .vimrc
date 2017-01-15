@@ -1,17 +1,26 @@
-set nocompatible               " Be iMproved
-
-" download vim-plug if missing 
-if empty(glob('~/.vim/autoload/plug.vim'))
-  silent !curl -fLo ~/.vim/autoload/plug.vim --create-dirs
-    \ https://raw.githubusercontent.com/junegunn/vim-plug/master/plug.vim
-  autocmd VimEnter * PlugInstall
-endif
-
+﻿set nocompatible               " Be iMproved
 " --------- plugins
 " :PlugUpdate to install/update
 " :PlugUpgrade to upgrade plug
 " :PlugClean to remove old stuff
-call plug#begin('~/.vim/plugged')
+"
+if has('win32') || has ('win64')
+    let $VIMHOME = $HOME."/vimfiles"
+else
+    let $VIMHOME = $HOME."/.vim"
+endif
+
+" download vim-plug if missing 
+if empty(glob($VIMHOME . '/autoload/plug.vim'))
+    if has('win32')
+        echoerr 'Please download https://raw.githubusercontent.com/junegunn/vim-plug/master/plug.vim to '. expand($VIMHOME . '/autoload/plug.vim')
+    else
+        call system("curl -fkLo " . expand($VIMHOME . '/autoload/plug.vim') . " --create-dirs https://raw.githubusercontent.com/junegunn/vim-plug/master/plug.vim")
+        autocmd VimEnter * PlugInstall
+    endif
+endif
+call plug#begin($VIMHOME . '/plugged')
+
 
 " packages
 
@@ -51,8 +60,13 @@ call plug#end()
 set laststatus=2
 let g:airline_theme             = 'solarized'
 let g:airline_powerline_fonts = 1
-set guifont=Meslo\ LG\ S\ Regular\ for\ Powerline
+if has("win32")
+	set guifont=DejaVu_Sans_Mono_for_PowerLine
+else
+	set guifont=Meslo\ LG\ S\ Regular\ for\ Powerline
+endif
 
+if !has("win32")
 " ctrl-p speed
 if executable('rg')
     set grepprg=rg\ --vimgrep
@@ -67,6 +81,7 @@ endif
 
 " load fzf
 set rtp+=/usr/local/opt/fzf
+endif
 
 " Turn on filetype plugins (:help filetype-plugin).
 if has('autocmd')
@@ -167,7 +182,12 @@ set undofile
 
 " Automatically create directories for backup and undo files.
 if !isdirectory(expand(s:dir))
-  call system("mkdir -p " . expand(s:dir) . "/{backup,undo}")
+    if has("win32") || has("win16")
+        call system("mkdir " . expand(s:dir) . "\\backup")
+        call system("mkdir " . expand(s:dir) . "\\undo")
+    else
+        call system("mkdir -p " . expand(s:dir) . "/{backup,undo}")
+    end
 end
 
 " Allow color schemes to do bright colors without forcing bold.
@@ -268,6 +288,7 @@ set wildignore+=*.zip,*.tar.gz,*.tar.bz2,*.rar,*.tar.xz
 set wildignore+=*/vendor/gems/*,*/vendor/cache/*,*/.bundle/*,*/.sass-cache/*
 set wildignore+=*.swp,*~,._*
 
+
 " Auto center on matched string.
 noremap n nzz
 noremap N Nzz
@@ -363,15 +384,17 @@ let python_highlight_all=1
 let g:tex_flavor = "latex"
 
 
-" ----- scrooloose/syntastic settings -----
-let g:syntastic_check_on_open = 1
-let g:syntastic_error_symbol = '✘'
-let g:syntastic_warning_symbol = "▲"
-augroup mySyntastic
-  au!
-  au FileType tex let b:syntastic_mode = "passive"
-augroup END
-let g:airline#extensions#syntastic#enabled = 1
+if !has("win32")
+    " ----- scrooloose/syntastic settings -----
+    let g:syntastic_check_on_open = 1
+    let g:syntastic_error_symbol = '✘'
+    let g:syntastic_warning_symbol = "▲"
+    augroup mySyntastic
+      au!
+      au FileType tex let b:syntastic_mode = "passive"
+    augroup END
+    let g:airline#extensions#syntastic#enabled = 1
+endif
 
 
 " ----- airblade/vim-gitgutter settings -----
@@ -416,5 +439,3 @@ function! UpdateSkim(status)
     call system(join(l:cmd + [line('.'), shellescape(l:out), shellescape(l:tex)], ' '))
   endif
 endfunction
-
-
