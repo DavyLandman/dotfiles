@@ -57,7 +57,7 @@ zplug "supercrabtree/k"
 #
 ## zsh stuff
 zplug "zsh-users/zsh-completions", hook-build:$ZPLUG_CHMOD
-zplug "zsh-users/zsh-syntax-highlighting", defer:1
+zplug "zsh-users/zsh-syntax-highlighting", defer:2
 zplug "chrissicool/zsh-256color"
 # zsh title in terminal
 zplug "jreese/zsh-titles"
@@ -73,7 +73,7 @@ if [[ $(uname) == Darwin ]]; then
 fi
 
 ## theme
-zplug "bhilburn/powerlevel9k", use:powerlevel9k.zsh-theme
+zplug "bhilburn/powerlevel9k", use:powerlevel9k.zsh-theme, as:theme, defer:3
 DEFAULT_USER='davy'
 POWERLEVEL9K_MODE='powerline'
 POWERLEVEL9K_PROMPT_ON_NEWLINE=true
@@ -81,12 +81,48 @@ POWERLEVEL9K_COLOR_SCHEME='light'
 POWERLEVEL9K_LEFT_PROMPT_ELEMENTS=(context root_indicator dir )
 POWERLEVEL9K_RIGHT_PROMPT_ELEMENTS=(vcs vi_mode)
 POWERLEVEL9K_MULTILINE_FIRST_PROMPT_PREFIX=""
+POWERLEVEL9K_VI_INSERT_MODE_STRING="✎"
+POWERLEVEL9K_VI_COMMAND_MODE_STRING=""
+POWERLEVEL9K_VI_MODE_INSERT_BACKGROUND='145'
+POWERLEVEL9K_VI_MODE_INSERT_FOREGROUND='235'
+POWERLEVEL9K_VI_MODE_NORMAL_BACKGROUND='254'
+POWERLEVEL9K_VI_MODE_NORMAL_FOREGROUND='235'
+
 
 if ! zplug check; then
     zplug install
 fi
 
 zplug load
+
+# until #319 is solved, these functions are needed to enable the VI mode prompt
+function zle-line-init {
+  powerlevel9k_prepare_prompts
+  if (( ${+terminfo[smkx]} )); then
+    printf '%s' ${terminfo[smkx]}
+  fi
+  zle reset-prompt
+  zle -R
+}
+
+function zle-line-finish {
+  powerlevel9k_prepare_prompts
+  if (( ${+terminfo[rmkx]} )); then
+    printf '%s' ${terminfo[rmkx]}
+  fi
+  zle reset-prompt
+  zle -R
+}
+
+function zle-keymap-select {
+  powerlevel9k_prepare_prompts
+  zle reset-prompt
+  zle -R
+}
+
+zle -N zle-line-init
+zle -N ale-line-finish
+zle -N zle-keymap-select
 
 POWERLEVEL9K_MULTILINE_SECOND_PROMPT_PREFIX="$(prompt_status left && prompt_vi_mode left && left_prompt_end)"
 [ -f ~/.fzf.zsh ] && source ~/.fzf.zsh
@@ -120,3 +156,8 @@ zstyle ':completion:*:*:-subscript-:*' tag-order indexes parameters
 # Directory
 zstyle ':completion:*:cd:*' ignore-parents parent pwd
 zstyle ':completion:*' list-colors ${(s.:.)LS_COLORS}
+
+
+
+
+
