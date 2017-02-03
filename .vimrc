@@ -51,6 +51,9 @@ Plug 'lervag/vimtex'
 Plug 'vim-scripts/indentpython.vim'
 Plug 'nvie/vim-flake8'
 
+" Camel cased motion
+Plug 'bkad/CamelCaseMotion'
+
 
 
 " Add plugins to &runtimepath
@@ -78,6 +81,8 @@ else
     \ 'AcceptSelection("e")': ['<space>', '<cr>', '<2-LeftMouse>'],
     \ }
 endif
+
+call camelcasemotion#CreateMotionMappings('<leader>')
 
 " load fzf
 set rtp+=/usr/local/opt/fzf
