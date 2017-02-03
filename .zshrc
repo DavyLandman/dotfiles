@@ -124,7 +124,7 @@ zle -N zle-line-init
 zle -N ale-line-finish
 zle -N zle-keymap-select
 
-POWERLEVEL9K_MULTILINE_SECOND_PROMPT_PREFIX="$(prompt_status left && prompt_vi_mode left && left_prompt_end)"
+POWERLEVEL9K_MULTILINE_SECOND_PROMPT_PREFIX="$(prompt_status left && left_prompt_end)"
 [ -f ~/.fzf.zsh ] && source ~/.fzf.zsh
 
 alias ls='ls -G'
@@ -143,6 +143,7 @@ export PKG_CONFIG_PATH=/usr/local/lib/pkgconfig:/usr/local/lib:/opt/X11/lib/pkgc
 export MONO_GAC_PREFIX="/usr/local"
 export FZF_DEFAULT_COMMAND='rg --files --no-ignore --hidden --follow --glob "!.git/*"'
 export PATH=$PATH:$HOME/.rvm/bin # Add RVM to PATH for scripting
+  fpath=(/usr/local/share/zsh-completions $fpath)
 
 
 # completion
@@ -157,7 +158,12 @@ zstyle ':completion:*:*:-subscript-:*' tag-order indexes parameters
 zstyle ':completion:*:cd:*' ignore-parents parent pwd
 zstyle ':completion:*' list-colors ${(s.:.)LS_COLORS}
 
+export PATH="/usr/local/bin:$PATH"
+export PATH="/usr/local/sbin:$PATH"
 
-
-
-
+if [ -f ~/.zsh_secrets ]; then
+    source ~/.zsh_secrets
+fi
+if [ -f "$HOME/cacert.pem" ]; then
+    export SSL_CERT_FILE="$HOME/cacert.pem"
+fi
