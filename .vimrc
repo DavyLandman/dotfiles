@@ -425,9 +425,13 @@ if has("unix")
     if s:uname == "Darwin"
         let g:vimtex_view_general_viewer
               \ = '/Applications/Skim.app/Contents/SharedSupport/displayline'
+        let g:vimtex_view_general_options = '-r @line @pdf @tex'
     endif
+elseif has('win32') || has ('win64')
+    let g:vimtex_view_general_viewer = 'SumatraPDF' 
+    let g:vimtex_view_general_options='-reuse-instance -forward-search @tex @line @pdf'
+    let g:vimtex_view_general_options_latexmk='-reuse-instance'
 endif
-let g:vimtex_view_general_options = '-r @line @pdf @tex'
 
 
 if has("unix")
