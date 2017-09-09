@@ -12,7 +12,7 @@ HISTSIZE=10000
 KEYTIMEOUT=23
 REPORTTIME=5
 SAVEHIST=10000
-ZPLUG_CHMOD='chmod --recursive g-w "$ZPLUG_HOME"'
+ZPLUG_CHMOD='chmod -R g-w "$ZPLUG_HOME"'
 ZPLUG_HOME=$ZSH/zplug
 
 source ~/.zplug/init.zsh
@@ -160,6 +160,9 @@ zstyle ':completion:*' list-colors ${(s.:.)LS_COLORS}
 
 export PATH="/usr/local/bin:$PATH"
 export PATH="/usr/local/sbin:$PATH"
+export PATH="$PATH:/Library/Python/2.7/bin"
+export MONO_GAC_PREFIX="/usr/local"
+
 
 if [ -f ~/.zsh_secrets ]; then
     source ~/.zsh_secrets

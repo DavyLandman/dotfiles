@@ -43,6 +43,7 @@ Plug 'airblade/vim-gitgutter'
 
 " Syntax Highlighting
 Plug 'sheerun/vim-polyglot'
+Plug 'gburca/vim-logcat'
 
 " LaTeX stuff
 Plug 'lervag/vimtex'
@@ -54,6 +55,7 @@ Plug 'nvie/vim-flake8'
 " Camel cased motion
 Plug 'bkad/CamelCaseMotion'
 
+Plug 'justinmk/vim-sneak'
 
 
 " Add plugins to &runtimepath
