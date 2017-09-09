@@ -124,8 +124,8 @@ zle -N zle-line-init
 zle -N ale-line-finish
 zle -N zle-keymap-select
 
-POWERLEVEL9K_MULTILINE_SECOND_PROMPT_PREFIX="$(prompt_status left && left_prompt_end)"
 [ -f ~/.fzf.zsh ] && source ~/.fzf.zsh
+POWERLEVEL9K_MULTILINE_SECOND_PROMPT_PREFIX="$(prompt_status left && left_prompt_end)"
 
 alias ls='ls -G'
 alias l='ls -lF'
@@ -133,14 +133,17 @@ alias lt='l -t'
 alias ll='lt -a'
 alias vi='vim'
 
-export GREP_OPTIONS='--color=auto'
+alias grep='grep --color=auto'
 export EDITOR='vim'
 export VISUAL='vim'
 export HISTCONTROL=erasedups
-export JAVA_HOME="`/usr/libexec/java_home -v '1.8*'`"
 
-export PKG_CONFIG_PATH=/usr/local/lib/pkgconfig:/usr/local/lib:/opt/X11/lib/pkgconfig
-export MONO_GAC_PREFIX="/usr/local"
+if [[ $(uname) == Darwin ]]; then
+    export JAVA_HOME="`/usr/libexec/java_home -v '1.8*'`"
+
+    export PKG_CONFIG_PATH=/usr/local/lib/pkgconfig:/usr/local/lib:/opt/X11/lib/pkgconfig
+    export MONO_GAC_PREFIX="/usr/local"
+fi
 export FZF_DEFAULT_COMMAND='rg --files --no-ignore --hidden --follow --glob "!.git/*"'
 export PATH=$PATH:$HOME/.rvm/bin # Add RVM to PATH for scripting
   fpath=(/usr/local/share/zsh-completions $fpath)
@@ -160,7 +163,10 @@ zstyle ':completion:*' list-colors ${(s.:.)LS_COLORS}
 
 export PATH="/usr/local/bin:$PATH"
 export PATH="/usr/local/sbin:$PATH"
-export PATH="$PATH:/Library/Python/2.7/bin"
+
+if [[ $(uname) == Darwin ]]; then
+    export PATH="$PATH:/Library/Python/2.7/bin"
+fi
 export MONO_GAC_PREFIX="/usr/local"
 
 
@@ -170,3 +176,7 @@ fi
 if [ -f "$HOME/cacert.pem" ]; then
     export SSL_CERT_FILE="$HOME/cacert.pem"
 fi
+
+# explicitly bind reverse search to control-r
+bindkey '^R' history-incremental-search-backward
+
