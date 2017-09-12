@@ -127,7 +127,11 @@ zle -N zle-keymap-select
 [ -f ~/.fzf.zsh ] && source ~/.fzf.zsh
 POWERLEVEL9K_MULTILINE_SECOND_PROMPT_PREFIX="$(prompt_status left && left_prompt_end)"
 
-alias ls='ls -G'
+if [[ $(uname) == Darwin ]]; then
+    alias ls='ls -G'
+else
+    alias ls='ls --color=auto'
+fi
 alias l='ls -lF'
 alias lt='l -t'
 alias ll='lt -a'
@@ -178,5 +182,5 @@ if [ -f "$HOME/cacert.pem" ]; then
 fi
 
 # explicitly bind reverse search to control-r
-bindkey '^R' history-incremental-search-backward
+bindkey '^R' history-incremental-pattern-search-backward
 
