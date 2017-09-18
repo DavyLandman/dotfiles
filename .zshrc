@@ -70,6 +70,7 @@ zplug "sharat87/zsh-vim-mode"
 if [[ $(uname) == Darwin ]]; then
     zplug "$(brew --prefix rbenv)/completions", from:local
     zplug "/usr/local/etc/bash_completion.d", from:local, defer:1
+    fpath=(/usr/local/share/zsh-completions $fpath)
 fi
 
 ## theme
@@ -150,7 +151,6 @@ if [[ $(uname) == Darwin ]]; then
 fi
 export FZF_DEFAULT_COMMAND='rg --files --no-ignore --hidden --follow --glob "!.git/*"'
 export PATH=$PATH:$HOME/.rvm/bin # Add RVM to PATH for scripting
-  fpath=(/usr/local/share/zsh-completions $fpath)
 
 
 # completion
@@ -167,9 +167,8 @@ zstyle ':completion:*' list-colors ${(s.:.)LS_COLORS}
 
 export PATH="/usr/local/bin:$PATH"
 export PATH="/usr/local/sbin:$PATH"
-
 if [[ $(uname) == Darwin ]]; then
-    export PATH="$PATH:/Library/Python/2.7/bin"
+    export PATH="/usr/local/opt/python/libexec/bin:$PATH"
 fi
 export MONO_GAC_PREFIX="/usr/local"
 
