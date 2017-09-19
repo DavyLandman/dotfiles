@@ -76,7 +76,11 @@ fi
 ## theme
 zplug "bhilburn/powerlevel9k", use:powerlevel9k.zsh-theme, as:theme, defer:3
 DEFAULT_USER='davy'
-POWERLEVEL9K_MODE='powerline'
+if [[ $(uname) == Darwin ]]; then
+    POWERLEVEL9K_MODE='nerdfont-complete'
+else
+    POWERLEVEL9K_MODE='powerline'
+fi
 POWERLEVEL9K_PROMPT_ON_NEWLINE=true
 POWERLEVEL9K_COLOR_SCHEME='light'
 POWERLEVEL9K_LEFT_PROMPT_ELEMENTS=(context root_indicator dir )
@@ -121,12 +125,15 @@ function zle-keymap-select {
   zle -R
 }
 
+
+POWERLEVEL9K_MULTILINE_LAST_PROMPT_PREFIX="$(prompt_status left && left_prompt_end)"
+
+
 zle -N zle-line-init
 zle -N ale-line-finish
 zle -N zle-keymap-select
 
 [ -f ~/.fzf.zsh ] && source ~/.fzf.zsh
-POWERLEVEL9K_MULTILINE_SECOND_PROMPT_PREFIX="$(prompt_status left && left_prompt_end)"
 
 if [[ $(uname) == Darwin ]]; then
     alias ls='ls -G'

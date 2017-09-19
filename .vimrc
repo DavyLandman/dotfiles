@@ -30,6 +30,7 @@ Plug 'vim-airline/vim-airline-themes'
 Plug 'altercation/vim-colors-solarized'
 Plug 'scrooloose/syntastic' " syntax fixes
 Plug 'tpope/vim-endwise' " automatically end scopes etc
+Plug 'ryanoasis/vim-devicons'
 
 " search stuff
 Plug 'junegunn/fzf.vim' " searches
@@ -68,7 +69,7 @@ let g:airline_powerline_fonts = 1
 if has("win32")
 	set guifont=DejaVu_Sans_Mono_for_PowerLine
 else
-	set guifont=Meslo\ LG\ S\ Regular\ for\ Powerline
+	set guifont=MesloLGS\ Nerd\ Font
 endif
 
 if !has("win32")
