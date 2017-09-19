@@ -126,7 +126,14 @@ function zle-keymap-select {
 }
 
 
-POWERLEVEL9K_MULTILINE_LAST_PROMPT_PREFIX="$(prompt_status left && left_prompt_end)"
+
+# work around around bug that the prompt_status stuff is only available after the first prompt is finished
+precmd() {
+    precmd() {
+        POWERLEVEL9K_MULTILINE_LAST_PROMPT_PREFIX="$(prompt_status left && left_prompt_end)"
+        precmd() {}
+    }
+}
 
 
 zle -N zle-line-init
