@@ -58,6 +58,8 @@ Plug 'bkad/CamelCaseMotion'
 
 Plug 'justinmk/vim-sneak'
 
+Plug 'stephpy/vim-yaml'
+
 
 " Add plugins to &runtimepath
 call plug#end()
@@ -370,6 +372,7 @@ autocmd FileType jade setlocal textwidth=0 spell
 autocmd FileType stylus setlocal textwidth=0
 autocmd FileType latex setlocal textwidth=0 spell
 autocmd FileType make setlocal noexpandtab
+autocmd FileType yaml,yml setlocal ts=2 sts=2 sw=2 expandtab
 
 au BufRead,BufNewFile *.jar,*.war,*.ear,*.sar,*.rar set filetype=zip
 autocmd BufRead,BufNewFile *.apk set filetype=zip
