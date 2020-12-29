@@ -360,7 +360,7 @@ if has('gui_running')
 endif
 
 colorscheme solarized
-set background=light
+set background=dark
 set spell
 set spelllang=en_us
 

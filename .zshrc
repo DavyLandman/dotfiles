@@ -64,6 +64,9 @@ zplug "jreese/zsh-titles"
 zplug "sharat87/zsh-vim-mode"
 #zplug "b4b4r07/zsh-vimode-visual", use:"*.zsh", defer:3
 
+# docker stuff
+zplug "docker/compose", use:contrib/completion/zsh
+
 
 if [[ $(uname) == Darwin ]]; then
     zplug "$(brew --prefix rbenv)/completions", from:local
