@@ -1,6 +1,4 @@
 
-
-
 export LANG=en_US.UTF-8
 export LANGUAGE=en_US.UTF-8
 export LC_ALL=en_US.UTF-8
@@ -74,7 +72,15 @@ if [[ $(uname) == Darwin ]]; then
 fi
 
 ## theme
-zplug "bhilburn/powerlevel9k", use:powerlevel9k.zsh-theme, as:theme, defer:3
+
+#zplug "romkatv/powerlevel10k", use:powerlevel10k.zsh-theme, as:theme, defer:3, depth:1
+#zplug "jackharrisonsherlock/common", use:common.zsh-theme, as:theme, defer:3, depth:1
+zplug mafredri/zsh-async, from:github
+zplug sindresorhus/pure, use:pure.zsh, from:github, as:theme
+
+PURE_GIT_PULL=0
+PURE_CMD_MAX_EXEC_TIME=2
+
 DEFAULT_USER='davy'
 if [[ $(uname) == Darwin ]]; then
     POWERLEVEL9K_MODE='nerdfont-complete'
@@ -85,7 +91,8 @@ POWERLEVEL9K_PROMPT_ON_NEWLINE=true
 POWERLEVEL9K_COLOR_SCHEME='light'
 POWERLEVEL9K_LEFT_PROMPT_ELEMENTS=(context root_indicator dir )
 POWERLEVEL9K_RIGHT_PROMPT_ELEMENTS=(vcs vi_mode)
-POWERLEVEL9K_MULTILINE_FIRST_PROMPT_PREFIX=""
+#POWERLEVEL9K_MULTILINE_FIRST_PROMPT_PREFIX=""
+#POWERLEVEL9K_MULTILINE_LAST_PROMPT_PREFIX="$(prompt_status left && left_prompt_end)"
 POWERLEVEL9K_VI_INSERT_MODE_STRING="✎"
 POWERLEVEL9K_VI_COMMAND_MODE_STRING=""
 POWERLEVEL9K_VI_MODE_INSERT_BACKGROUND='145'
@@ -100,40 +107,40 @@ fi
 
 zplug load
 
-# until #319 is solved, these functions are needed to enable the VI mode prompt
-function zle-line-init {
-  powerlevel9k_prepare_prompts
-  if (( ${+terminfo[smkx]} )); then
-    printf '%s' ${terminfo[smkx]}
-  fi
-  zle reset-prompt
-  zle -R
-}
-
-function zle-line-finish {
-  powerlevel9k_prepare_prompts
-  if (( ${+terminfo[rmkx]} )); then
-    printf '%s' ${terminfo[rmkx]}
-  fi
-  zle reset-prompt
-  zle -R
-}
-
-function zle-keymap-select {
-  powerlevel9k_prepare_prompts
-  zle reset-prompt
-  zle -R
-}
-
+## until #319 is solved, these functions are needed to enable the VI mode prompt
+#function zle-line-init {
+#  powerlevel9k_prepare_prompts
+#  if (( ${+terminfo[smkx]} )); then
+#    printf '%s' ${terminfo[smkx]}
+#  fi
+#  zle reset-prompt
+#  zle -R
+#}
+#
+#function zle-line-finish {
+#  powerlevel9k_prepare_prompts
+#  if (( ${+terminfo[rmkx]} )); then
+#    printf '%s' ${terminfo[rmkx]}
+#  fi
+#  zle reset-prompt
+#  zle -R
+#}
+#
+#function zle-keymap-select {
+#  powerlevel9k_prepare_prompts
+#  zle reset-prompt
+#  zle -R
+#}
+#
 
 
 # work around around bug that the prompt_status stuff is only available after the first prompt is finished
-precmd() {
-    precmd() {
-        POWERLEVEL9K_MULTILINE_LAST_PROMPT_PREFIX="$(prompt_status left && left_prompt_end)"
-        precmd() {}
-    }
-}
+#precmd() {
+#    precmd() {
+#        POWERLEVEL9K_MULTILINE_LAST_PROMPT_PREFIX="$(prompt_status left && left_prompt_end)"
+#        precmd() {}
+#    }
+#}
 
 
 zle -N zle-line-init
@@ -197,3 +204,4 @@ fi
 # explicitly bind reverse search to control-r
 bindkey '^R' history-incremental-pattern-search-backward
 
+export PATH="$PATH:$HOME/go/bin"
