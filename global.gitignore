@@ -56,3 +56,7 @@ Thumbs.db
 # scons #
 #
 .sconsign.dblite
+
+# vscode
+.vscode/
+.vscode

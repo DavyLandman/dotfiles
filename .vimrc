@@ -40,7 +40,7 @@ Plug 'tpope/vim-projectionist' " Switch between .c and .h files using :AT
 " Git stuff
 Plug 'tpope/vim-fugitive'
 Plug 'vim-scripts/gitignore'
-Plug 'airblade/vim-gitgutter'
+" Plug 'airblade/vim-gitgutter'
 
 " Syntax Highlighting
 Plug 'sheerun/vim-polyglot'
@@ -59,6 +59,7 @@ Plug 'bkad/CamelCaseMotion'
 Plug 'justinmk/vim-sneak'
 
 Plug 'stephpy/vim-yaml'
+Plug 'Kazark/vim-log4x'
 
 
 " Add plugins to &runtimepath
@@ -69,7 +70,7 @@ set laststatus=2
 let g:airline_theme             = 'solarized'
 let g:airline_powerline_fonts = 1
 if has("win32")
-	set guifont=DejaVu_Sans_Mono_for_PowerLine
+	set guifont=Consolas\ NF:h10.5
 else
 	set guifont=MesloLGS\ Nerd\ Font
 endif

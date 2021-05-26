@@ -1,0 +1,9 @@
+[core]
+    editor = "'C:/Program Files (x86)/vim/vim80/gvim.exe' -f -i NONE"
+    longpaths = true
+[user]
+	signingkey = 10BE143C
+[gpg]
+    program = "C:/Program Files (x86)/GnuPG/bin/gpg.exe"
+[commit]
+	gpgsign = true
