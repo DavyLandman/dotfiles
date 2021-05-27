@@ -23,7 +23,8 @@ zplug 'zplug/zplug', hook-build:'zplug --self-manage'
 zplug "zsh-users/zsh-history-substring-search", defer:3
 
 ## git stuff
-zplug "plugins/git",   from:oh-my-zsh
+#zplug "plugins/git",   from:oh-my-zsh
+zplug "plugins/gitfast",   from:oh-my-zsh
 
 ## clipboard for osx (not sure if usefull)
 zplug "lib/clipboard", from:oh-my-zsh, if:"[[ $OSTYPE == *darwin* ]]"
@@ -35,9 +36,7 @@ zplug "lib/clipboard", from:oh-my-zsh, if:"[[ $OSTYPE == *darwin* ]]"
 #zplug "andrewferrier/fzf-z"
 
 ## git stuff
-zplug "peterhurford/git-aliases.zsh"
-GIT_ALIASES_SILENCE_GIT_STATUS=1
-zplug "tevren/gitfast-zsh-plugin"
+#zplug "peterhurford/git-aliases.zsh"
 
 ## man pages
 zplug "zlsun/solarized-man"
@@ -61,7 +60,10 @@ zplug "chrissicool/zsh-256color"
 zplug "jreese/zsh-titles"
 
 # vim mode
-zplug "sharat87/zsh-vim-mode"
+#zplug "softmoth/zsh-vim-mode"
+#zplug "sharat87/zsh-vim-mode"
+#zplug "jeffreytse/zsh-vi-mode"
+zplug "plugins/vi-mode",   from:oh-my-zsh
 #zplug "b4b4r07/zsh-vimode-visual", use:"*.zsh", defer:3
 
 # docker stuff
@@ -79,29 +81,18 @@ fi
 #zplug "romkatv/powerlevel10k", use:powerlevel10k.zsh-theme, as:theme, defer:3, depth:1
 #zplug "jackharrisonsherlock/common", use:common.zsh-theme, as:theme, defer:3, depth:1
 zplug mafredri/zsh-async, from:github
+
 zplug sindresorhus/pure, use:pure.zsh, from:github, as:theme
+#zplug jackharrisonsherlock/common, as:theme
+
 
 PURE_GIT_PULL=0
 PURE_CMD_MAX_EXEC_TIME=2
 
 DEFAULT_USER='davy'
-if [[ $(uname) == Darwin ]]; then
-    POWERLEVEL9K_MODE='nerdfont-complete'
-else
-    POWERLEVEL9K_MODE='powerline'
-fi
-POWERLEVEL9K_PROMPT_ON_NEWLINE=true
-POWERLEVEL9K_COLOR_SCHEME='light'
-POWERLEVEL9K_LEFT_PROMPT_ELEMENTS=(context root_indicator dir )
-POWERLEVEL9K_RIGHT_PROMPT_ELEMENTS=(vcs vi_mode)
-#POWERLEVEL9K_MULTILINE_FIRST_PROMPT_PREFIX=""
-#POWERLEVEL9K_MULTILINE_LAST_PROMPT_PREFIX="$(prompt_status left && left_prompt_end)"
-POWERLEVEL9K_VI_INSERT_MODE_STRING="✎"
-POWERLEVEL9K_VI_COMMAND_MODE_STRING=""
-POWERLEVEL9K_VI_MODE_INSERT_BACKGROUND='145'
-POWERLEVEL9K_VI_MODE_INSERT_FOREGROUND='235'
-POWERLEVEL9K_VI_MODE_NORMAL_BACKGROUND='254'
-POWERLEVEL9K_VI_MODE_NORMAL_FOREGROUND='235'
+
+VI_MODE_SET_CURSOR=true
+VI_MODE_RESET_PROMPT_ON_MODE_CHANGE=true
 
 
 if ! zplug check; then
@@ -109,41 +100,6 @@ if ! zplug check; then
 fi
 
 zplug load
-
-## until #319 is solved, these functions are needed to enable the VI mode prompt
-#function zle-line-init {
-#  powerlevel9k_prepare_prompts
-#  if (( ${+terminfo[smkx]} )); then
-#    printf '%s' ${terminfo[smkx]}
-#  fi
-#  zle reset-prompt
-#  zle -R
-#}
-#
-#function zle-line-finish {
-#  powerlevel9k_prepare_prompts
-#  if (( ${+terminfo[rmkx]} )); then
-#    printf '%s' ${terminfo[rmkx]}
-#  fi
-#  zle reset-prompt
-#  zle -R
-#}
-#
-#function zle-keymap-select {
-#  powerlevel9k_prepare_prompts
-#  zle reset-prompt
-#  zle -R
-#}
-#
-
-
-# work around around bug that the prompt_status stuff is only available after the first prompt is finished
-#precmd() {
-#    precmd() {
-#        POWERLEVEL9K_MULTILINE_LAST_PROMPT_PREFIX="$(prompt_status left && left_prompt_end)"
-#        precmd() {}
-#    }
-#}
 
 
 zle -N zle-line-init
@@ -208,3 +164,41 @@ fi
 bindkey '^R' history-incremental-pattern-search-backward
 
 export PATH="$PATH:$HOME/go/bin"
+
+env=~/.ssh/agent.env
+
+agent_load_env () { test -f "$env" && . "$env" >| /dev/null ; }
+
+agent_start () {
+    (umask 077; ssh-agent >| "$env")
+    . "$env" >| /dev/null ; }
+
+agent_load_env
+
+# agent_run_state: 0=agent running w/ key; 1=agent w/o key; 2= agent not running
+
+agent_run_state=$(ssh-add -l >| /dev/null 2>&1; echo $?)
+
+
+
+if [ ! "$SSH_AUTH_SOCK" ] || [ $agent_run_state = 2 ]; then
+    echo "Starting ssh-agent and adding key"
+    agent_start
+    ssh-add
+
+    echo "Setting Windows SSH user environment variables (pid: $SSH_AGENT_PID, sock: $SSH_AUTH_SOCK)"
+    setx SSH_AGENT_PID "$SSH_AGENT_PID"
+    setx SSH_AUTH_SOCK "$SSH_AUTH_SOCK"
+elif [ "$SSH_AUTH_SOCK" ] && [ $agent_run_state = 1 ]; then
+    echo "Reusing ssh-agent and adding key"
+    ssh-add
+elif [ "$SSH_AUTH_SOCK" ] && [ $agent_run_state = 0 ]; then
+    echo "Reusing ssh-agent and reusing key"
+    ssh-add -l
+fi
+
+unset env
+
+export GIT_SSH_COMMAND="ssh"
+
+source <(hcloud completion zsh)
