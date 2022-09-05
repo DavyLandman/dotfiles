@@ -1,4 +1,6 @@
-
+zmodload zsh/zprof
+export PATH="/c/Program Files/OpenSSH:/cmd:$PATH"
+#export PATH="/cmd:$PATH"
 export LANG=en_US.UTF-8
 export LANGUAGE=en_US.UTF-8
 export LC_ALL=en_US.UTF-8
@@ -29,12 +31,6 @@ zplug "plugins/gitfast",   from:oh-my-zsh
 ## clipboard for osx (not sure if usefull)
 zplug "lib/clipboard", from:oh-my-zsh, if:"[[ $OSTYPE == *darwin* ]]"
 
-
-# some fzf search plugin thingy
-#zplug "mollifier/anyframe"
-# more fzf studd
-#zplug "andrewferrier/fzf-z"
-
 ## git stuff
 #zplug "peterhurford/git-aliases.zsh"
 
@@ -42,7 +38,7 @@ zplug "lib/clipboard", from:oh-my-zsh, if:"[[ $OSTYPE == *darwin* ]]"
 zplug "zlsun/solarized-man"
 #
 ## fancy autosuggest based on history
-#zplug "zsh-users/zsh-autosuggestions"
+zplug "zsh-users/zsh-autosuggestions"
 #
 ## file browsing
 #zplug "vifon/deer", use:deer
@@ -82,7 +78,7 @@ fi
 #zplug "jackharrisonsherlock/common", use:common.zsh-theme, as:theme, defer:3, depth:1
 zplug mafredri/zsh-async, from:github
 
-zplug sindresorhus/pure, use:pure.zsh, from:github, as:theme
+zplug sindresorhus/pure, use:pure.zsh, from:github, as:theme, at:main
 #zplug jackharrisonsherlock/common, as:theme
 
 
@@ -161,44 +157,73 @@ if [ -f "$HOME/cacert.pem" ]; then
 fi
 
 # explicitly bind reverse search to control-r
-bindkey '^R' history-incremental-pattern-search-backward
+#bindkey '^R' history-incremental-pattern-search-backward
 
-export PATH="$PATH:$HOME/go/bin"
+export PATH="$PATH:$HOME/go/bin:$(go env GOPATH)/bin"
 
-env=~/.ssh/agent.env
-
-agent_load_env () { test -f "$env" && . "$env" >| /dev/null ; }
-
-agent_start () {
-    (umask 077; ssh-agent >| "$env")
-    . "$env" >| /dev/null ; }
-
-agent_load_env
-
-# agent_run_state: 0=agent running w/ key; 1=agent w/o key; 2= agent not running
-
+# env=~/.ssh/agent.env
+# 
+# agent_load_env () { test -f "$env" && . "$env" >| /dev/null ; }
+# 
+# agent_start () {
+#     (umask 077; ssh-agent >| "$env")
+#     . "$env" >| /dev/null ; }
+# 
+# agent_load_env
+# 
+# # agent_run_state: 0=agent running w/ key; 1=agent w/o key; 2= agent not running
+# 
 agent_run_state=$(ssh-add -l >| /dev/null 2>&1; echo $?)
 
 
 
-if [ ! "$SSH_AUTH_SOCK" ] || [ $agent_run_state = 2 ]; then
+if [ $agent_run_state = 2 ]; then
     echo "Starting ssh-agent and adding key"
-    agent_start
     ssh-add
-
-    echo "Setting Windows SSH user environment variables (pid: $SSH_AGENT_PID, sock: $SSH_AUTH_SOCK)"
-    setx SSH_AGENT_PID "$SSH_AGENT_PID"
-    setx SSH_AUTH_SOCK "$SSH_AUTH_SOCK"
-elif [ "$SSH_AUTH_SOCK" ] && [ $agent_run_state = 1 ]; then
+elif [ $agent_run_state = 1 ]; then
     echo "Reusing ssh-agent and adding key"
     ssh-add
-elif [ "$SSH_AUTH_SOCK" ] && [ $agent_run_state = 0 ]; then
+elif [ $agent_run_state = 0 ]; then
     echo "Reusing ssh-agent and reusing key"
     ssh-add -l
 fi
 
-unset env
 
-export GIT_SSH_COMMAND="ssh"
+## git ssh fake stuff
+
+#git_ssh_env=~/.ssh/git-agent.env
+# 
+#agent_load_env () { test -f "$git_ssh_env" && . "$git_ssh_env" >| /dev/null ; }
+#
+#agent_start () {
+#     (umask 077; /usr/bin/ssh-agent >| "$git_ssh_env")
+#     . "$git_ssh_env" >| /dev/null ; }
+# 
+#agent_load_env
+# 
+#
+#agent_run_state=$(/usr/bin/ssh-add -l >| /dev/null 2>&1; echo $?)
+#if [ $agent_run_state = 2 ]; then
+#    echo "Starting git-ssh-agent and adding key"
+#    agent_start
+#    /usr/bin/ssh-add ~/.ssh/id_ed25519
+#elif [ $agent_run_state = 1 ]; then
+#    echo "Reusing git-ssh-agent and adding key"
+#    /usr/bin/ssh-add ~/.ssh/id_ed25519
+#elif [ $agent_run_state = 0 ]; then
+#    echo "Reusing git-ssh-agent and reusing key"
+#    /usr/bin/ssh-add -l
+#fi
+
+
+    unset env
+
+export GIT_SSH_COMMAND='c:\\Program\ Files\\OpenSSH\\ssh.exe'
+#export GIT_SSH_COMMAND="ssh"
 
 source <(hcloud completion zsh)
+
+#export SSH_SK_PROVIDER=/usr/lib/winhello.dll
+
+# Control + backspace
+bindkey '^H' backward-kill-word
